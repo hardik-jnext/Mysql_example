@@ -1,0 +1,293 @@
+
+1. Write a query to create tables. 
+
+Query :-
+     (A).  Student table
+
+CREATE TABLE Student_table (
+id int NOT Null AUTO_INCREMENT,
+firstName varchar(255) NOT Null ,    
+middleName  varchar(255)NOT Null,
+lastName varchar(255)NOT Null,
+mobile_no varchar(10)NOT Null,
+email varchar(255)NOT Null,
+join_date date NOT Null,
+birth_date date NOT Null,
+city varchar(255)NOT Null,
+department_id int NOT Null,
+PRIMARY KEY(id)
+);
+      
+  (b). Department table      
+
+CREATE TABLE Department_table(
+id int NOT Null AUTO_INCREMENT,
+department_Name varchar(255) NOT Null,    
+PRIMARY KEY(id)
+);
+
+ (c) add foreign key
+
+ALTER TABLE Student_table
+ADD FOREIGN KEY(department_id) REFERENCES Department_table(id)
+
+
+2.Write a query to insert data.
+
+Query :-        
+      (A).  Student table
+
+INSERT INTO Student_table(`firstName`,`middleName`,`lastName`,`mobile_no`,`email`,`join_date`,`birth_date`,`city`,`department_id`)
+VALUES("Hardik","Thakarshibhai","Sheladiya","8980350898","hardik.jnext@gmail.com","2023-01-02","2002-03-24","Surat”,1),
+("Dishang","Maheshbhai","Undhad","8145399877","Dishang.jnext@gmail.com","2022-02-22","2003-07-20","Surat",1)
+
+  (b). Department table  
+  
+INSERT into Department_table(`department_Name`)
+VALUES("Node.js")
+
+
+3.Write a query to display of all student
+
+Query :-
+SELECT * FROM `Student_table`
+
+
+4.Write a query to display of all student and sort in first name or any fields
+
+
+Query :-
+       Ascending
+SELECT * FROM Student_table
+ORDER BY firstName ASC(default)
+
+     Descending
+SELECT * FROM Student_table
+ORDER BY firstName DESC
+
+
+5.Write a query for count of total student
+
+Query :-
+SELECT COUNT(*) FROM Student_table
+
+
+6.Write a query to display the student's all details and department names of all student_data.
+id         firstname         middlename         lastname         mobileno         department_id         departmentname
+1          aaa                      bbb                         ccc                     1234567            1                                   test
+
+
+Query :-
+SELECT Student_table.*,Department_table.department_Name from Student_table
+JOIN Department_table on Student_table.department_id = Department_table.id
+
+
+
+7.write a query for find student which belongs to same city
+
+Query :-
+SELECT * FROM `Student_table` 
+GROUP BY  city
+
+
+8.write a query for count of student with same department
+
+Query :-
+SELECT Department_table.department_Name,COUNT(*) FROM Student_table
+JOIN  Department_table on Student_table.department_id = Department_table.id
+GROUP BY Department_table.department_Name
+
+
+9.write a query for retrieve data like
+id student_full_name            DOB                  Age   
+1  f-name m-name l-name     2022-01-01          22  
+
+Query :-
+SELECT `id`,CONCAT(firstName," ",middleName," ",lastName) as student_full_name,birth_date as DOB, TIMESTAMPDIFF(year,birth_date,CURRENT_DATE) as age from Student_table
+
+
+10.write a query for display student list which age is greater than 15 
+
+Query :-
+SELECT *,TIMESTAMPDIFF(year,birth_date,CURRENT_DATE) as age from Student_table where TIMESTAMPDIFF(year,birth_date,CURRENT_DATE) > 15
+
+
+11. write a query 
+id         student_full_name         total_marks        percentage        result
+1          fname mname lname       150                       55%                    pass/fail  
+
+Query :-
+SELECT student_id as id ,concat(Student_table.firstName," ",Student_table.middleName," ",Student_table.lastName) as student_full_name,sum(sub_marks) as total_marks,sum(sub_marks)/5 as percentage,CASE
+WHEN  sum(sub_marks)/5 < 35 THEN "fail"
+ELSE 'pass'
+END AS result
+FROM Markesheet_table 
+JOIN Student_table on Markesheet_table.student_id = Student_table.id
+GROUP by  id 
+
+
+12.write a query for for retrieve above list order by percentage
+
+Query :-
+SELECT student_id as id ,concat(Student_table.firstName," ",Student_table.middleName," ",Student_table.lastName) as student_full_name,sum(sub_marks) as total_marks,sum(sub_marks)/5 as percentage,CASE
+ WHEN  sum(sub_marks)/5 < 35 THEN "fail"
+ ELSE 'pass'
+END AS result
+FROM Markesheet_table 
+JOIN Student_table on Markesheet_table.student_id = Student_table.id
+GROUP by  id 
+   Ascending
+ORDER by percentage
+   Descending
+ORDER by percentage DESC
+
+
+13. write a query for all student list with their all subject mark
+   id         student_full_name           sub1    sub2    sub3    sub4    total_marks    percentage    result
+   1          f-name m-name l-name      10         20         60        0             90                        55%           pass/fail 
+
+
+Query :-
+SELECT Student_table.id,concat(Student_table.firstName," ",Student_table.middleName," ",Student_table.lastName) as student_full_name,
+(SELECT sub_marks FROM Markesheet_table WHERE student_id = Student_table.ID AND sub_id =1) AS English,
+ (SELECT sub_marks FROM Markesheet_table WHERE student_id = Student_table.ID AND sub_id =2) AS Maths,
+ (SELECT sub_marks FROM Markesheet_table WHERE student_id = Student_table.ID AND sub_id =3) AS Science,
+ (SELECT sub_marks FROM Markesheet_table WHERE student_id = Student_table.ID AND sub_id =4) AS Hindi, 
+ (SELECT sub_marks FROM Markesheet_table WHERE student_id = Student_table.ID AND sub_id =5) AS Gujrati,
+ sum(sub_marks) as total_marks,sum(sub_marks)/5 as percentage,CASE
+ WHEN  sum(sub_marks)/5 < 35 THEN "fail"
+ ELSE 'pass'
+END AS result 
+from Subject_table 
+JOIN Markesheet_table on Subject_table.id = Markesheet_table.sub_id 
+ JOIN Student_table on Markesheet_table.student_id = Student_table.id
+GROUP by id
+
+
+14. write a query to display list in ascending and decending order by total marks
+
+Query :-
+SELECT Student_table.id,concat(Student_table.firstName," ",Student_table.middleName," ",Student_table.lastName) as student_full_name,
+(SELECT sub_marks FROM Markesheet_table WHERE student_id = Student_table.ID AND sub_id =1) AS English,
+ (SELECT sub_marks FROM Markesheet_table WHERE student_id = Student_table.ID AND sub_id =2) AS Maths,
+ (SELECT sub_marks FROM Markesheet_table WHERE student_id = Student_table.ID AND sub_id =3) AS Science,
+ (SELECT sub_marks FROM Markesheet_table WHERE student_id = Student_table.ID AND sub_id =4) AS Hindi, 
+ (SELECT sub_marks FROM Markesheet_table WHERE student_id = Student_table.ID AND sub_id =5) AS Gujrati,
+ sum(sub_marks) as total_marks,sum(sub_marks)/5 as percentage,CASE
+ WHEN  sum(sub_marks)/5 < 35 THEN "fail"
+ ELSE 'pass'
+END AS result 
+from Subject_table 
+JOIN Markesheet_table on Subject_table.id = Markesheet_table.sub_id 
+ JOIN Student_table on Markesheet_table.student_id = Student_table.id
+GROUP by id
+    Ascending
+ORDER by sum(sub_marks)
+    Descending
+ORDER by sum(sub_marks) DESC
+
+
+15. write a query for search given string or word to all fields
+find word " test"
+id         firstname       middlename          lastname           mobileno    
+1            testing                  bbbb                   ccc             12345676  
+2            aaa                        test                     ddd            12234234
+3            test                       gdsb                    test            12313123
+
+
+Query :-
+SELECT id,firstName,middleName,lastName,mobile_no FROM `Student_table` 
+WHERE firstName  LIKE "%test%" OR lastName  LIKE "%test%" OR middleName  LIKE "%test%"
+
+
+
+16. Write a query for search given string or word to all fields and decide order accoring to find out list
+For example, given word found in 3 fields then its show first than same word found in 2 field than show in second
+
+
+Query :-
+SELECT id,firstName,middleName,lastName,
+  (CASE 
+    WHEN firstName LIKE '%test%' THEN 1 ELSE 0 
+    END + 
+   CASE 
+    WHEN middleName LIKE '%test%' THEN 1 ELSE 0 
+    END +
+   CASE 
+    WHEN lastName LIKE '%test%' THEN 1 ELSE 0 
+    END ) AS total_count,mobile_no
+FROM Student_table
+WHERE firstName LIKE '%test%' OR middleName LIKE '%test%' OR lastName LIKE '%test%' 
+ORDER by total_count DESC
+
+
+
+17. Write a query for those student which list percentage between given range
+
+Query :-
+SELECT student_id as id ,firstName,middleName,lastName,sum(sub_marks)/5 as percentage
+FROM Markesheet_table 
+JOIN Student_table on Markesheet_table.student_id = Student_table.id
+GROUP by id
+HAVING sum(sub_marks)/5 BETWEEN 45 AND 100
+
+
+18. Write a query for display first 5 student list which join date in given range
+
+Query :-
+SELECT * FROM `Student_table` WHERE `join_date` BETWEEN "2021-12-31" AND "2023-02-28"
+
+
+
+19. Write a query for find out student details which have max percentage
+
+Query :-
+SELECT student_id as id ,firstName,middleName,lastName,sum(sub_marks)/5 as percentage
+FROM Markesheet_table 
+JOIN Student_table on Markesheet_table.student_id = Student_table.id
+GROUP by  id 
+ORDER BY sum(sub_marks)/5  DESC
+LIMIT 1
+
+
+
+20. Write a query for below output
+student_id.  total_student   result
+1,2,5                    3                  pass 
+3,4                       2                   fail 
+
+Query :- 
+(SELECT GROUP_CONCAT(Id )as Student_id,
+	COUNT(Total_id)as Total_Students,
+	IF(Result = 'PASS','PASS','FAIL')as Results  
+	FROM
+	(
+		SELECT s.id as Id,
+		COUNT(s.id)as Total_id,
+		SUM(sub_marks)/5 as Percentage,
+		IF(SUM(sub_marks)/5 >35,'PASS','FAIL')as Result
+		FROM Student_table s
+		INNER JOIN Markesheet_table m ON s.id = m.student_id
+		GROUP BY s.id
+		HAVING Percentage > 35
+	)as student)
+   UNION ALL
+   (SELECT GROUP_CONCAT(Id )as Student_id,
+	COUNT(Total_id)as Total_Students,
+	IF(Result = 'FAIL','FAIL','PASS')as Results  
+	FROM
+	(
+		SELECT s.id as Id,
+		COUNT(s.id)as Total_id,
+		SUM(sub_marks)/5 as Percentage,
+		IF(SUM(sub_marks)/5 <35,'FAIL','PASS')as Result
+		FROM Student_table s
+		INNER JOIN Markesheet_table m ON s.id = m.student_id
+		GROUP BY s.id
+		HAVING Percentage < 35
+	)as student)
+
+
+
+
+
